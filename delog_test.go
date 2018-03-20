@@ -22,3 +22,10 @@ func run() string {
 func TestFormatter(test *testing.T) {
 	test.Logf("%q", run())
 }
+
+func TestHook(test *testing.T) {
+	log := logrus.New()
+	log.SetLevel(logrus.DebugLevel)
+	log.AddHook(NewHook(nil, nil))
+	log.Debugf("test message")
+}
