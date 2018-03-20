@@ -13,7 +13,8 @@ var (
 )
 
 type Formatter struct {
-	formatter logrus.Formatter
+	stackOffset int
+	formatter   logrus.Formatter
 }
 
 func NewFormatter(formatter logrus.Formatter) *Formatter {
@@ -21,7 +22,8 @@ func NewFormatter(formatter logrus.Formatter) *Formatter {
 		formatter = &logrus.TextFormatter{}
 	}
 	return &Formatter{
-		formatter: formatter,
+		stackOffset: 0,
+		formatter:   formatter,
 	}
 }
 
@@ -32,6 +34,8 @@ func (dbgFormatter *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	} else {
 		skip = 4
 	}
+	skip += dbgFormatter.stackOffset
+
 	caller, filePath, line, _ := runtime.Caller(skip)
 	frame, _ := runtime.CallersFrames([]uintptr{caller}).Next()
 	file := stripGopath(filePath)
