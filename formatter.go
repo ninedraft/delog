@@ -12,11 +12,13 @@ var (
 	_ logrus.Formatter = new(Formatter)
 )
 
+// Formatter -- logrus formatter, adds prefix a-la [FILE_PATH:FUNCTION:LINE]
 type Formatter struct {
 	stackOffset int
 	formatter   logrus.Formatter
 }
 
+// NewFormatter -- creates new delog logrus formatter with provided underlying formatter. If formatter param is nil, them uses default text formatter
 func NewFormatter(formatter logrus.Formatter) *Formatter {
 	if formatter == nil {
 		formatter = &logrus.TextFormatter{}
@@ -27,6 +29,7 @@ func NewFormatter(formatter logrus.Formatter) *Formatter {
 	}
 }
 
+// Format -- add prefix [FILE_PATH:FUNCTION:LINE] to entry message and pass it to underlying formatter
 func (dbgFormatter *Formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	skip := 0
 	if len(entry.Data) == 0 {
